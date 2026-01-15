@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: urlshortener_db
+    environment:
+      MYSQL_DATABASE: urlshortener_db
+      MYSQL_USER: urlshortener_user
+      MYSQL_PASSWORD: sr@123
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:alpine
+    container_name: urlshortener_redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: urlshortener_backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+      REDIS_URL: redis://redis:6379/1
+    command: sh -c "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 backend.wsgi:application"
+
+  frontend:
+    build: ./frontend
+    container_name: urlshortener_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    environment:
+      WDS_SOCKET_PORT: 0
+
+volumes:
+  mysql_data:

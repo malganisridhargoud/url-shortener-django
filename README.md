@@ -1,113 +1,143 @@
-# Django-React URL Shortener
+# Authenticated URL Shortener
 
-##### This document has been authored by referencing the content provided in the `backendinfo.txt` and `frontendinfo.txt` files. For more comprehensive information about the project, kindly consult those aforementioned files.
+A full-stack URL shortener application featuring secure user authentication, a minimalist UI, and robust backend APIs. Built with Django (Backend) and React (Frontend), utilizing MySQL for data storage and Redis for high-performance caching.
 
-This project is a URL shortener application built using Django for the backend and React for the frontend. It allows users to shorten long URLs and access them via the generated short URLs. The application also features jwt based user authentication, private routes.
+## ✨ Features
 
-## Homepage
+### 🔐 User Authentication & Security
+-   **Secure Registration**: User sign-up with username, email, and password.
+-   **JWT Authentication**: Stateless authentication using JSON Web Tokens (Access & Refresh tokens).
+-   **Protected Routes**: Dashboard and URL management are restricted to authenticated users.
+-   **Password Hashing**: Secure password storage using Django's default hashing mechanisms.
 
-Homepage of this application contains link to url-shortener, jwt token details (for project demonstration), logout feature.
+### 🔗 URL Management
+-   **Shorten URLs**: Instantly generate short, unique codes for long URLs.
+-   **Dashboard View**: View a personal list of your 3 most recent shortened URLs.
+-   **Rolling Retention**: Automatically manages storage by keeping only the 3 latest URLs per user.
+-   **Delete Capability**: Users can manually remove their own shortened URLs.
+-   **Click-to-Open**: Short codes in the dashboard are clickable links for easy access.
 
-![homepage](images/django_homepage.png)
+### ⚡ Performance & Reliability (Redis)
+-   **Caching**: URL redirects are cached in Redis for 15 minutes, ensuring instant redirection without hitting the database repeatedly.
+-   **Rate Limiting**: Users are limited to creating **5 URLs per minute** to prevent spam.
+-   **Cooldown Timer**: Interactive UI countdown block when the rate limit is exceeded.
 
-## URL-shortener page
+### 🎨 User Interface
+-   **Minimalist Design**: Clean, modern interface using scoped CSS variables.
+-   **Responsive Layout**: Optimized for both desktop and mobile viewing.
+-   **User Feedback**: Loading states, error handling, rate-limit timers, and success confirmations.
 
-You can copy and paste the URL you wish to shorten, and the resulting shortened URL can then be utilized to access the original page.
+### 🚀 DevOps & Infrastructure
+-   **Dockerized**: Fully containerized Backend, Frontend, Database, and Cache.
+-   **Production Ready**: Configured with `Gunicorn` (WSGI server) and `Whitenoise` (Static files).
+-   **Database**: MySQL 8.0 integration for reliable persistent storage.
+-   **Cache**: Redis (Alpine) for caching and session management.
+-   **Deployable**: Ready for deployment on cloud platforms like AWS EC2.
 
-![urlshortening](images/django_urlshortener.png)
+---
 
-## Login page
+## 🛠️ Tech Stack
 
-![loginpage](images/django_loginpage.png)
+### Frontend
+-   **React.js (v18)**: Component-based UI library.
+-   **React Router v6**: Client-side routing.
+-   **CSS3**: Custom design system (no heavy CSS frameworks).
+-   **Axios/Fetch**: HTTP client for API interaction.
+-   **JWT Decode**: Handling token payload on the client side.
 
-## Register page
+### Backend
+-   **Python 3.10+**: Core programming language.
+-   **Django 5**: High-level web framework.
+-   **Django REST Framework (DRF)**: Powerful toolkit for building Web APIs.
+-   **SimpleJWT**: JSON Web Token authentication for DRF.
+-   **Django Redis**: Cache backend interface.
+-   **Django Ratelimit**: Decorator-based rate limiting.
+-   **Gunicorn**: Production-grade HTTP server.
+-   **Whitenoise**: Static file serving for Python web apps.
+-   **MySQL**: Relational database management system.
+-   **Redis**: In-memory data structure store for caching/throttling.
 
-![registerpage](images/django_register.png)
+### Infrastructure
+-   **Docker**: Containerization platform.
+-   **Docker Compose**: Multi-container Docker applications tool.
+-   **AWS EC2**: (Compatible) Cloud computing platform for deployment.
 
-## Backend Setup
+---
 
-1. Create the Django project and app:
-   ```bash
-   django-admin startproject backend
-   python manage.py startapp application
-   ```
+## 🚀 Quick Start (Docker)
 
-2. Install required packages:
-   ```bash
-   pip install django djangorestframework djangorestframework-simplejwt django-cors-headers
-   ```
+The easiest way to run the application is using Docker Compose.
 
-JWT token pair
+### Prerequisites
+-   Docker and Docker Compose installed on your machine.
 
-![tokenpair](images/django_tokenpairobtained.png)
-   
-3. Configure CORS:
-   In `settings.py`, set `CORS_ALLOW_ALL_ORIGINS = True` to enable communication between the frontend and backend.
+### Steps
+1.  **Clone portions of the repo (if applicable) or navigate to root.**
+2.  **Run the application**:
+    ```bash
+    docker compose up --build
+    ```
+    *(Note: Ensure you are in the root directory where `docker-compose.yml` resides)*
 
-4. Set up models, authentication, and URL endpoints according to the backend information provided.
+3.  **Access the App**:
+    -   **Frontend**: http://localhost:3000
+    -   **Backend API**: http://localhost:8000/api/
 
-## Frontend Setup
+The application will automatically set up MySQL, Redis, apply migrations, and start both servers.
 
-1. Create the React app:
-   ```bash
-   npx create-react-app frontend
-   ```
+---
 
-2. Install required packages:
-   ```bash
-   npm install react-router-dom jwt-decode
-   ```
+## ⚙️ Local Development (Manual Setup)
 
-3. Set up components, context, pages, and utils directories as described.
+If you prefer to run services manually without Docker, you **MUST** have a local Redis server running on port 6379.
 
-4. Configure private routes and token management using the information provided.
+### Backend
+1.  Navigate to `backend/`:
+    ```bash
+    cd backend
+    ```
+2.  Create and activate virtual environment:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # Windows: venv\Scripts\activate
+    ```
+3.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  Configure Database in `settings.py` (Default expects `localhost` MySQL).
+5.  Run Migrations and Server:
+    ```bash
+    python manage.py migrate
+    python manage.py runserver
+    ```
 
-## Running the Project
+### Frontend
+1.  Navigate to `frontend/`:
+    ```bash
+    cd frontend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start server:
+    ```bash
+    npm start
+    ```
 
-### Backend:
-1. Activate the virtual environment:
-   ```bash
-   venv/Scripts/activate
-   ```
+## 📝 API Endpoints
 
-2. Run the backend server:
-   ```bash
-   python manage.py runserver
-   ```
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/register/` | Register a new user | No |
+| `POST` | `/api/token/` | Login (Obtain Access/Refresh Pair) | No |
+| `POST` | `/api/shorten/` | Create a new short URL (Rate Limited) | Yes |
+| `GET` | `/api/my-urls/` | List logged-in user's URLs (Max 3) | Yes |
+| `DELETE` | `/api/url/<id>/` | Delete a URL | Yes |
+| `GET` | `/<short_code>/` | Redirect to original URL (Cached) | No |
 
-### Frontend:
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-
-2. Run the frontend development server:
-   ```bash
-   npm start
-   ```
-
-## Notable URLs
-
-- Backend API: http://127.0.0.1:8000/api/
-- Token Obtain: http://127.0.0.1:8000/api/token/
-- Token Refresh: http://127.0.0.1:8000/api/token/refresh/
-- User Registration: http://127.0.0.1:8000/register/registeruser/
-- URL Shortener: http://127.0.0.1:8000/register/shorten/
-
-## Usage
-
-1. Access the frontend at `http://localhost:3000`.
-2. Register or log in with an existing account.
-3. Use the URL shortener to generate short URLs for long URLs.
-4. Access private routes to view and manage your notes.
+---
 
 ## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## References
-
-- Programming Assistance: Documentations, Youtube, Stackoverflow, ChatGPT
-- Text/Document Refactoring: ChatGPT
-- Aesthetic/UI Support: ChatGPT
-
+MIT License

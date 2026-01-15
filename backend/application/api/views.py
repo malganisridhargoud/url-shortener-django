@@ -45,7 +45,6 @@ def getRoutes(request):
 
     return Response(routes)
 
-
 # incase a basic note retrieval is to be made
 # function to serialize
 # @api_view(['GET'])
@@ -57,3 +56,65 @@ def getRoutes(request):
 #     serializer = NoteSerializer(notes, many=True)
 
 #     return Response(serializer.data)
+
+from .serializers import RegisterSerializer, ShortenedURLSerializer
+from ..models import ShortenedURL
+from rest_framework import status
+
+@api_view(['POST'])
+def register_user(request):
+    """API Endpoint for user registration"""
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from django_ratelimit.decorators import ratelimit
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@ratelimit(key='user', rate='5/m', method='POST', block=False)
+def create_short_url(request):
+    """Create a new shortened URL for the logged-in user"""
+    if getattr(request, 'limited', False):
+        return Response(
+            {"error": "Rate limit exceeded. Try again after 1 minute."}, 
+            status=status.HTTP_429_TOO_MANY_REQUESTS
+        )
+        
+    serializer = ShortenedURLSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        
+        # Enforce limit of 3 URLs: Delete older ones
+        user_urls = ShortenedURL.objects.filter(user=request.user).order_by('-created_at')
+        if user_urls.count() > 3:
+            # Get IDs of URLs to delete (skip the first 3)
+            urls_to_delete = user_urls[3:]
+            # Delete them
+            for url in urls_to_delete:
+                url.delete()
+                
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_urls(request):
+    """Get all shortened URLs for the logged-in user"""
+    user = request.user
+    urls = ShortenedURL.objects.filter(user=user).order_by('-created_at')
+    serializer = ShortenedURLSerializer(urls, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_short_url(request, pk):
+    """Delete a shortened URL"""
+    try:
+        url = ShortenedURL.objects.get(pk=pk, user=request.user)
+        url.delete()
+        return Response({"message": "URL deleted successfully"}, status=status.HTTP_200_OK)
+    except ShortenedURL.DoesNotExist:
+        return Response({"error": "URL not found or unauthorized"}, status=status.HTTP_404_NOT_FOUND)

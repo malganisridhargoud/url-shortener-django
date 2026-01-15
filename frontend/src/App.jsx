@@ -4,8 +4,9 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // pages import
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import Dashboard from "./pages/Dashboard";
 
 // components import
 import Header from "./components/Header";
@@ -24,11 +25,14 @@ function App() {
         <AuthProvider>
           <Header />
           <Routes>
-            {/* making HomePage a private route and accessible only if user is authenticated */}
+            {/* Private Routes */}
             <Route element={<PrivateRoutes />}>
-              <Route element={<HomePage />} path="/" exact />
+              <Route element={<Dashboard />} path="/" exact />
             </Route>
+
+            {/* Public Routes */}
             <Route element={<LoginPage />} path="/login" />
+            <Route element={<RegisterPage />} path="/register" />
           </Routes>
         </AuthProvider>
       </Router>

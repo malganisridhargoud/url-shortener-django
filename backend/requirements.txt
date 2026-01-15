@@ -1,0 +1,16 @@
+asgiref==3.11.0
+cffi==2.0.0
+cryptography==46.0.3
+Django==5.2.10
+django-cors-headers==4.9.0
+django-ratelimit==4.1.0
+django-redis==6.0.0
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
+pycparser==2.23
+PyJWT==2.10.1
+PyMySQL==1.1.2
+redis==7.1.0
+sqlparse==0.5.5
+gunicorn==21.2.0
+whitenoise==6.6.0

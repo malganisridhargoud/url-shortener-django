@@ -6,51 +6,44 @@ const LoginPage = () => {
   let { loginUser } = useContext(AuthContext);
 
   return (
-    <div className="container d-flex justify-content-center align-items-center min-vh-100">
-      <div className="card shadow p-4">
-        <h3 className="mb-4 text-center">
-          Django-React | JWT | Authenticator{" "}
-        </h3>
-        <h5 className="mb-4 text-center">Login</h5>
+    <div className="container" style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div className="card" style={{ width: "100%", maxWidth: "450px" }}>
+        <h2 className="text-center mb-4">Welcome Back</h2>
+
         <form onSubmit={loginUser}>
-          <div className="mb-3">
+          <div className="form-group">
+            <label className="form-label">Username</label>
             <input
               type="text"
-              className="form-control"
               name="username"
-              placeholder="Username"
+              className="form-control"
+              placeholder="Enter your username"
+              required
             />
           </div>
-          <div className="mb-3">
+          <div className="form-group">
+            <label className="form-label">Password</label>
             <input
               type="password"
-              className="form-control"
               name="password"
-              placeholder="Password"
+              className="form-control"
+              placeholder="Enter your password"
+              required
             />
           </div>
-          <div className="d-flex justify-content-center mb-3">
-            <button type="submit" className="btn btn-primary">
-              Login
-            </button>
-          </div>
+
+          <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
+            Sign In
+          </button>
         </form>
-        <div className="text-center">
-          <p>
+
+        <div className="text-center mt-4">
+          <p style={{ color: "var(--text-secondary)" }}>
             Don't have an account?{" "}
-            <Link to="http://localhost:8000/register/registeruser/">Register</Link>
+            <Link to="/register" style={{ fontWeight: "500" }}>
+              Create Account
+            </Link>
           </p>
-          <p>Or</p>
-          <small>Use the following test account(s):</small>
-          <br />
-          <small>
-            username: <span style={{ color: "blue" }}>user1</span> or{" "}
-            <span style={{ color: "blue" }}>user2</span>
-          </small>
-          <br />
-          <small>
-            username: <span style={{ color: "blue" }}>resu321321</span>
-          </small>
         </div>
       </div>
     </div>
