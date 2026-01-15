@@ -72,7 +72,11 @@ The easiest way to run the application is using Docker Compose.
 -   Docker and Docker Compose installed on your machine.
 
 ### Steps
-1.  **Clone portions of the repo (if applicable) or navigate to root.**
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/malganisridhargoud/url-shortener-django.git
+    cd url-shortener-django
+    ```
 2.  **Run the application**:
     ```bash
     docker compose up --build
