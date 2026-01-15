@@ -13,10 +13,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import pymysql
+from dotenv import load_dotenv
+
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # part of simplejwt, jwt customization
 from datetime import timedelta
@@ -25,10 +30,10 @@ from datetime import timedelta
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1jg)g$y6tx8fvc5#&4$o-js@c)sk0$9j+v%say7-0)%p_(-kwl'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -154,11 +159,11 @@ CACHES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'urlshortener_db',
-        'USER': 'urlshortener_user',
-        'PASSWORD': 'sr@123',
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME', 'urlshortener_db'),
+        'USER': os.getenv('DB_USER', 'urlshortener_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'sr@123'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
