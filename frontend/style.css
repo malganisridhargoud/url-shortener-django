@@ -1,0 +1,74 @@
+/* Reset basic margins and pick a clean font family */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Limit max width and center our application dashboard layout */
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #e0e0e0;
+    margin-bottom: 25px;
+}
+
+/* Organize individual book rows nicely */
+.books-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Cards for separate items */
+.book-card {
+    border-left: 5px solid #3498db;
+    background-color: #fafbfc;
+    padding: 15px;
+    border-radius: 0 6px 6px 0;
+    transition: transform 0.2s;
+}
+
+.book-card:hover {
+    transform: translateX(5px);
+    background-color: #f7f9fa;
+}
+
+.book-title {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+}
+
+.book-author {
+    margin: 0 0 10px 0;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.book-desc {
+    margin: 0;
+    color: #555;
+    line-height: 1.4;
+}
+
+.status-msg {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
