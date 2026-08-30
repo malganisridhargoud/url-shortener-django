@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Book Catalog</title>
+</head>
+<body>
+    <h1>Book Catalog</h1>
+    <!-- Points to name="book_create" in urls.py -->
+    <a href="{% url 'book_create' %}">➕ Add New Book</a>
+    <hr>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 'books' is passed down by BookListView -->
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.desc }}</td>
+                <td>
+                    <!-- Points to your specific path names with hyphens/underscores -->
+                    <a href="{% url 'book-detail' book.pk %}">👁️ View</a> | 
+                    <a href="{% url 'book_update' book.pk %}">✏️ Edit</a> | 
+                    <a href="{% url 'book_delete' book.pk %}">❌ Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No books available in the catalog.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
