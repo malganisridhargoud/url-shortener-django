@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Displays 'Create' or 'Update' based on get_context_data() -->
+    <title>{{ action }} Book</title>
+</head>
+<body>
+    <h1>{{ action }} Book</h1>
+    <hr>
+
+    <form method="POST">
+        {% csrf_token %}
+        <!-- Class-Based Views automatically populate this 'form' object -->
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'book_display' %}">Cancel</a>
+    </form>
+</body>
+</html>
